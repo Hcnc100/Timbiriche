@@ -4,12 +4,9 @@ import Controller.Controller;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
-import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.*;
 
 public class Interfaz extends JFrame {
     private JPanel gamePane;
@@ -20,6 +17,9 @@ public class Interfaz extends JFrame {
         setSize(300, 300);
         setTitle("Timbiriche");
         add(getGamePane(), CENTER);
+        Button button= new Button("click");
+        button.addActionListener(e -> controller.initAlgoritmo(gamePane.getGraphics()));
+        add(button,SOUTH);
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -43,7 +43,7 @@ public class Interfaz extends JFrame {
                 new MouseListener() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        controller.clickInPoint(e.getPoint(),gamePane.getGraphics());
+                        controller.clickInPointHuman(e.getPoint(),gamePane.getGraphics());
                     }
 
                     @Override

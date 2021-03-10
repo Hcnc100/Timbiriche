@@ -40,6 +40,9 @@ public class MyPoints implements Constantes {
         panelDrawable.setColor(Color.black);
         panelDrawable.fillOval(x-radio,y-radio, diametro, diametro);
     }
+    public Point getPoint(){
+        return new Point(x,y);
+    }
 
     public boolean contains(Point point){
         return rectangle.contains(point);

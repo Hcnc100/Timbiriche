@@ -6,4 +6,5 @@ public interface Constantes {
     int nCuadros = nPoints-1;
     boolean DEBUG = false;
     int marginCuadroInterno =1;
+    int ProdundidadBusqueda=2;
 }

@@ -10,26 +10,14 @@ import java.util.ArrayList;
 
 public class VarShared implements Constantes {
    public MyPoints[][] puntos;
-    public Arista[][] verticesHorizontales;
-    public Arista[][] verticesVerticales;
-    public MyPoints pointSelected;
-    public boolean isFind=false;
-    public Node nodoEncontrado;
-    public boolean isRunning=false;
-    public ArrayList<Node> nodosVisistados;
-    public ArrayList<Arista> verticesVisitados = new ArrayList<>();
-    public ArrayList<Arista> verticesNoVisitados = new ArrayList<>();
+    public Arista[][] aristasHorizontales;
+    public Arista[][] aristasVerticales;
     public Cuadro[][] cuadros;
-    public ArrayList<Cuadro> cuadrosSeleccionadosActuales = new ArrayList<>();
+    public ArrayList<Cuadro> cuadrosActuales = new ArrayList<>();
+    public ArrayList<Arista> aristasVisibles = new ArrayList<>();
+    public ArrayList<Arista> aristasNoVisibles = new ArrayList<>();
+    public MyPoints pointSelected;
     public int userPoints=0;
     public int iaPoints=0;
-
-    public VarShared(Node raiz) {
-        
-    }
-    
     public  VarShared(){}
-
-    public void setNodoAnswer(Node nodoAux) {
-    }
 }

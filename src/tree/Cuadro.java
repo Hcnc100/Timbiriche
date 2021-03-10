@@ -49,6 +49,19 @@ public class Cuadro implements Constantes {
         return listCuadrosSelected;
     }
 
+    public static ArrayList<Cuadro> getCuadrosFromPoints(Cuadro[][] cuadros,ArrayList<Arista> aristasVisibles) {
+        ArrayList<Cuadro> listCuadrosSelected = new ArrayList<>();
+        for (int f = 0; f < nCuadros-1; f++) {
+            for (int c = 0; c < nCuadros-1; c++) {
+                if(aristasVisibles.contains(cuadros[f][c].aristaTop) && aristasVisibles.contains(cuadros[f][c].aristaBotton)&&
+                        aristasVisibles.contains(cuadros[f][c].aristaLeft) && aristasVisibles.contains(cuadros[f][c].aristaRigth)){
+                    listCuadrosSelected.add(cuadros[f][c]);
+                }
+            }
+        }
+        return listCuadrosSelected;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
