@@ -132,10 +132,12 @@ public class Arbol {
                     (o1, o2) -> Integer.compare(o2.puntuacion, o1.puntuacion)
             ).collect(Collectors.toList());
             if (movimientosValidos.size()!=0){
+                if(movimientosValidos.get(0).puntuacion== inicio.puntuacion){
+                    Collections.shuffle(movimientosValidos);
+                }
                 if (movimientosValidos.get(0).puntuacion>nodoEncontrado.puntuacion || nodoEncontrado == inicio){
                     nodoEncontrado=movimientosValidos.get(0);
                 }
-
             }
             nodoActual.hijos.addAll(movimientosValidos);
             cola.addAll(movimientosValidos);
