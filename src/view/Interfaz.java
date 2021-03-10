@@ -31,6 +31,8 @@ public class Interfaz extends JFrame {
                 //System.out.println("Moved to " + e.getComponent().getLocation());
             }
         });
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 

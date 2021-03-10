@@ -10,8 +10,10 @@ public class MyPoints implements Constantes {
     private final Rectangle rectangle;
     public int x;
     public int y;
+    public Point coordenadasMatrix;
 
-    public MyPoints() {
+    public MyPoints(int f,int c) {
+        coordenadasMatrix= new Point(f,c);
         rectangle = new Rectangle(0,0,diametro,diametro);
     }
 
@@ -31,6 +33,11 @@ public class MyPoints implements Constantes {
 
     public void setSelect(Graphics panelDrawable){
         panelDrawable.setColor(Color.orange);
+        panelDrawable.fillOval(x-radio,y-radio, diametro, diametro);
+    }
+
+    public void setDeselect(Graphics panelDrawable){
+        panelDrawable.setColor(Color.black);
         panelDrawable.fillOval(x-radio,y-radio, diametro, diametro);
     }
 

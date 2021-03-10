@@ -1,18 +1,21 @@
 package view;
 
 import java.awt.*;
+import java.util.ArrayList;
 
-public class Vertice {
-    private final MyPoints pointA;
-    private final MyPoints pointB;
+public class Arista {
+    private MyPoints pointA;
+    private MyPoints pointB;
     public boolean isVisible;
 
+    public Arista(){}
 
-    public Vertice(MyPoints pointA,MyPoints pointB){
+    public Arista(MyPoints pointA, MyPoints pointB){
         this.pointA=pointA;
         this.pointB=pointB;
         this.isVisible=false;
     }
+
 
     public void paint(Graphics panelDrawable){
         if (isVisible){
@@ -21,11 +24,6 @@ public class Vertice {
             panelDrawable.setColor(Color.white);
         }
         panelDrawable.drawLine(pointA.x, pointA.y, pointB.x, pointB.y);
-    }
-
-    public void setSelected(Graphics graphics){
-        isVisible=true;
-        paint(graphics);
     }
 
     public boolean contains(MyPoints a,MyPoints b){
