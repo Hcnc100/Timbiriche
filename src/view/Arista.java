@@ -1,45 +1,75 @@
 package view;
 
+import Controller.Constantes;
+
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Objects;
 
-public class Arista {
+import static java.lang.Thread.sleep;
+
+public class Arista implements Constantes {
     public MyPoints pointA;
     public MyPoints pointB;
-    public boolean isVisible;
+    private boolean visible;
+    private Color color;
+    private int orientation;
 
     public Arista() {
+    }
+
+    public void setOrientacion(int orientacion){
+        this.orientation=orientacion;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setAristaVisible(Color color,Graphics graphics,int timeSleep) {
+        this.color = color;
+        this.visible=true;
+        try {
+            sleep(timeSleep);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        paint(graphics);
+    }
+
+    public void setAristaVisible() {
+        this.visible = true;
     }
 
     public Arista(MyPoints pointA, MyPoints pointB, boolean isVisible) {
         this.pointA = pointA;
         this.pointB = pointB;
-        this.isVisible = isVisible;
+        this.visible = isVisible;
+        this.color = colorInvisible;
     }
 
     public Arista(MyPoints pointA, MyPoints pointB) {
         this.pointA = pointA;
         this.pointB = pointB;
-        this.isVisible = false;
+        this.visible = false;
+        this.color = colorInvisible;
     }
 
 
     public void paint(Graphics panelDrawable) {
-        if (isVisible) {
-            panelDrawable.setColor(Color.black);
-        } else {
-            panelDrawable.setColor(Color.white);
+        panelDrawable.setColor(color);
+        if(orientation==Horizontal){
+            panelDrawable.fillRect(pointA.x, pointA.y, (pointB.x-pointA.x),3);
+        }else{
+            panelDrawable.fillRect(pointA.x, pointA.y, 3,(pointB.y-pointA.y));
         }
-        panelDrawable.drawLine(pointA.x, pointA.y, pointB.x, pointB.y);
     }
 
     public Arista getCopy() {
         return new Arista(
                 this.pointA,
                 this.pointB,
-                this.isVisible
-                );
+                this.visible
+        );
     }
 
     @Override
@@ -52,7 +82,7 @@ public class Arista {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pointA, pointB, isVisible);
+        return Objects.hash(pointA, pointB);
     }
 
     public boolean contains(MyPoints a, MyPoints b) {

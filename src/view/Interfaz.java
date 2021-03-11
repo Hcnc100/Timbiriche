@@ -17,7 +17,7 @@ public class Interfaz extends JFrame {
         setSize(300, 300);
         setTitle("Timbiriche");
         add(getGamePane(), CENTER);
-        Button button= new Button("click");
+        Button button= new Button("Jugada IA");
         button.addActionListener(e -> controller.initAlgoritmo(gamePane.getGraphics()));
         add(button,SOUTH);
         addComponentListener(new ComponentAdapter() {

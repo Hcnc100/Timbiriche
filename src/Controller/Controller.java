@@ -16,91 +16,83 @@ import static java.lang.Thread.sleep;
 public class Controller implements Constantes {
     private VarShared varShared;
     private Arbol arbol;
+    private MyPoints pointSelected;
+
     public Controller() {
         varShared = new VarShared();
-        arbol= new Arbol();
+        arbol = new Arbol();
+        pointSelected=null;
         createDrawables();
     }
 
-    public void clickInPointHuman(Point point, Graphics graphics) {
+    private MyPoints getPointFromClick(Point point) {
         for (int f = 0; f < nPoints; f++) {
             for (int c = 0; c < nPoints; c++) {
                 if (varShared.puntos[f][c].contains(point)) {
-                    if (varShared.pointSelected == null) {
-                        varShared.pointSelected = varShared.puntos[f][c];
-                        varShared.pointSelected.setSelect(graphics);
-                    } else {
-                        if (Arista.isLineValide(varShared.pointSelected, varShared.puntos[f][c])) {
-                            Arista auxArista=getArista(varShared.pointSelected, varShared.puntos[f][c]);
-                            auxArista.isVisible=true;
-
-                            ArrayList<Cuadro> cuadrosNuevosCompletos = Cuadro.getCuadros(varShared.cuadros);
-                            if (cuadrosNuevosCompletos.size() != varShared.cuadrosActuales.size()) {
-                                ArrayList<Cuadro> auxArray= new ArrayList<>(cuadrosNuevosCompletos);
-                                auxArray.removeAll(varShared.cuadrosActuales);
-                                if(auxArray.size()!=0){
-                                    auxArray.get(0).paintComplete(graphics);
-                                    varShared.cuadrosActuales.add(auxArray.get(0));
-                                }
-                            }
-                            auxArista.paint(graphics);
-                            varShared.aristasVisibles.add(auxArista);
-                            varShared.aristasNoVisibles.remove(auxArista);
-                            varShared.puntos[f][c].setSelect(graphics);
-                            try {
-                                sleep(200);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            varShared.pointSelected.setDeselect(graphics);
-                            varShared.puntos[f][c].setDeselect(graphics);
-                            varShared.pointSelected = null;
-
-                        } else {
-                            JOptionPane.showMessageDialog(null,
-                                    "Los puntos deben estar alineados\n(vertical u horizontalmente)",
-                                    "Error", JOptionPane.WARNING_MESSAGE);
-                        }
-                    }
+                    return varShared.puntos[f][c];
                 }
             }
         }
-    }
-    private void clickInPoint(Arista arista,Graphics graphics){
-        arista.pointA.setSelect(graphics);
-        try {
-            sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        arista.pointB.setSelect(graphics);
-        try {
-            sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        arista.pointA.setDeselect(graphics);
-        arista.pointB.setDeselect(graphics);
-        arista.isVisible=true;
-        arista.paint(graphics);
-        ArrayList<Cuadro> cuadrosNuevosCompletos = Cuadro.getCuadros(varShared.cuadros);
-        if (cuadrosNuevosCompletos.size() != varShared.cuadrosActuales.size()) {
-            ArrayList<Cuadro> auxArray= new ArrayList<>(cuadrosNuevosCompletos);
-            auxArray.removeAll(varShared.cuadrosActuales);
-            if(auxArray.size()!=0){
-                auxArray.get(0).paintComplete(graphics);
-                varShared.cuadrosActuales.add(auxArray.get(0));
-            }
-        }
-        varShared.aristasVisibles.add(arista);
-        varShared.aristasNoVisibles.remove(arista);
+        return null;
     }
 
-    public void initAlgoritmo(Graphics graphics){
-        Node nodoInicial=new Node(varShared.aristasVisibles, varShared.aristasNoVisibles, 0,varShared.iaPoints,null,null);
-        Node siguinteMovimineto=arbol.startAlgoritmoAnchuraLineal(nodoInicial,(ProdundidadBusqueda*2)-1,varShared);
-        if(siguinteMovimineto.aristaMod!=null){
-            clickInPoint(siguinteMovimineto.aristaMod,graphics);
+    public void clickInPointHuman(Point point, Graphics graphics) {
+        MyPoints clickPoint = getPointFromClick(point);
+        if(clickPoint!=null){
+            if (pointSelected == null) {
+                pointSelected = clickPoint;
+                pointSelected.setSelect(graphics,0);
+            } else {
+                if (Arista.isLineValide(pointSelected,clickPoint)) {
+                    Arista auxArista = getArista(pointSelected,clickPoint);
+                    animationAristaVisible(graphics,auxArista,colorUser,0,0);
+                    updateCuadrosBeforeClick(auxArista,graphics,colorUser);
+                    pointSelected=null;
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Los puntos deben estar alineados\n(vertical u horizontalmente)",
+                            "Error", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        }
+
+    }
+
+    private void animationAristaVisible(Graphics graphics, Arista arista, Color colorArista, int timeSleepPoints, int timeSleepArista) {
+        arista.pointA.setSelect(graphics, timeSleepPoints);
+        arista.pointB.setSelect(graphics, timeSleepPoints);
+        arista.setAristaVisible(colorArista, graphics, timeSleepArista);
+        arista.pointA.setDeselect(graphics);
+        arista.pointB.setDeselect(graphics);
+    }
+
+    private void updateCuadrosBeforeClick(Arista arista, Graphics graphics, Color colorArista) {
+        varShared.aristasVisibles.add(arista);
+        varShared.aristasNoVisibles.remove(arista);
+        ArrayList<Cuadro> cuadrosNuevosCompletos = Cuadro.getCuadros(varShared.cuadros);
+        if (cuadrosNuevosCompletos.size() != varShared.cuadrosActuales.size()) {
+            ArrayList<Cuadro> auxArray = new ArrayList<>(cuadrosNuevosCompletos);
+            auxArray.removeAll(varShared.cuadrosActuales);
+            if (auxArray.size() != 0) {
+                auxArray.get(0).setVisible(colorArista);
+                varShared.cuadrosActuales.add(auxArray.get(0));
+                paintDrawables(graphics);
+            }
+        }
+    }
+
+    private void clickInPointIa(Arista arista, Graphics graphics) {
+        animationAristaVisible(graphics, arista, colorIA, 100, 100);
+        updateCuadrosBeforeClick(arista, graphics, colorIA);
+    }
+
+    public void initAlgoritmo(Graphics graphics) {
+        Node nodoInicial = new Node(varShared.aristasVisibles, varShared.aristasNoVisibles, 0, varShared.iaPoints, null, null);
+        Node siguinteMovimineto = arbol.startAlgoritmoAnchuraLineal(nodoInicial, (ProdundidadBusqueda * 2) - 1, varShared);
+        if (siguinteMovimineto.aristaMod != null) {
+            int indexReal=varShared.aristasNoVisibles.indexOf(siguinteMovimineto.aristaMod);
+            Arista aristaReal=varShared.aristasNoVisibles.get(indexReal);
+            clickInPointIa(aristaReal, graphics);
         }
     }
 
@@ -122,8 +114,9 @@ public class Controller implements Constantes {
         }
         return new Arista();
     }
-    private MyPoints[][] createPoints(){
-        MyPoints[][] puntos=new MyPoints[nPoints][nPoints];
+
+    private MyPoints[][] createPoints() {
+        MyPoints[][] puntos = new MyPoints[nPoints][nPoints];
         for (int f = 0; f < nPoints; f++) {
             for (int c = 0; c < nPoints; c++) {
                 puntos[f][c] = new MyPoints(f, c);
@@ -131,29 +124,34 @@ public class Controller implements Constantes {
         }
         return puntos;
     }
-    private Arista[][] createAristasHorizontales(){
-        Arista[][]  aristasHorizontales = new Arista[nPoints][nPoints - 1];
+
+    private Arista[][] createAristasHorizontales() {
+        Arista[][] aristasHorizontales = new Arista[nPoints][nPoints - 1];
         for (int f = 0; f < nPoints; f++) {
             for (int c = 0; c < nPoints - 1; c++) {
                 aristasHorizontales[f][c] = new Arista(varShared.puntos[f][c], varShared.puntos[f][c + 1]);
+                aristasHorizontales[f][c].setOrientacion(Horizontal);
             }
         }
         return aristasHorizontales;
     }
-    private Arista[][] createAristaVertical(){
-        Arista[][]aristasVerticales = new Arista[nPoints - 1][nPoints];
+
+    private Arista[][] createAristaVertical() {
+        Arista[][] aristasVerticales = new Arista[nPoints - 1][nPoints];
         for (int f = 0; f < nPoints - 1; f++) {
             for (int c = 0; c < nPoints; c++) {
                 aristasVerticales[f][c] = new Arista(varShared.puntos[f][c], varShared.puntos[f + 1][c]);
+                aristasVerticales[f][c].setOrientacion(Vertical);
             }
         }
         return aristasVerticales;
     }
-    private Cuadro[][] createCuadros(MyPoints[][] puntos){
+
+    private Cuadro[][] createCuadros(MyPoints[][] puntos) {
         Cuadro[][] cuadros = new Cuadro[nCuadros][nCuadros];
         for (int f = 0; f < nPoints - 1; f++) {
             for (int c = 0; c < nPoints - 1; c++) {
-                Cuadro aux= new Cuadro(
+                Cuadro aux = new Cuadro(
                         puntos[f][c],
                         puntos[f][c + 1],
                         puntos[f + 1][c],
@@ -163,55 +161,56 @@ public class Controller implements Constantes {
                 cuadros[f][c] = aux;
             }
         }
-        return  cuadros;
+        return cuadros;
     }
+
     public void createDrawables() {
         varShared.puntos = createPoints();
-        varShared.aristasHorizontales =createAristasHorizontales();
-        varShared.aristasVerticales= createAristaVertical();
-        varShared.cuadros =createCuadros(varShared.puntos);
+        varShared.aristasHorizontales = createAristasHorizontales();
+        varShared.aristasVerticales = createAristaVertical();
+        varShared.cuadros = createCuadros(varShared.puntos);
         setAristasStatesVisitadas();
     }
 
-    private void setAristasStatesVisitadas(){
+    private void setAristasStatesVisitadas() {
         for (int f = 0; f < nPoints; f++) {
             for (int c = 0; c < nPoints - 1; c++) {
-                if(varShared.aristasHorizontales[f][c].isVisible){
+                if (varShared.aristasHorizontales[f][c].isVisible()) {
                     varShared.aristasVisibles.add(varShared.aristasHorizontales[f][c]);
-                }else{
+                } else {
                     varShared.aristasNoVisibles.add(varShared.aristasHorizontales[f][c]);
                 }
             }
         }
 
-        for (int f = 0; f < nPoints-1; f++) {
+        for (int f = 0; f < nPoints - 1; f++) {
             for (int c = 0; c < nPoints; c++) {
-                if(varShared.aristasVerticales[f][c].isVisible){
+                if (varShared.aristasVerticales[f][c].isVisible()) {
                     varShared.aristasVisibles.add(varShared.aristasVerticales[f][c]);
-                }else{
+                } else {
                     varShared.aristasNoVisibles.add(varShared.aristasVerticales[f][c]);
                 }
             }
         }
     }
 
-    private void setVertices(Cuadro cuadro){
+    private void setVertices(Cuadro cuadro) {
         for (int f = 0; f < nPoints; f++) {
             for (int c = 0; c < nPoints - 1; c++) {
-               if(varShared.aristasHorizontales[f][c].contains(cuadro.pointTopL, cuadro.pointTopR)){
-                    cuadro.aristaTop=varShared.aristasHorizontales[f][c];
-               }else if(varShared.aristasHorizontales[f][c].contains(cuadro.pointButtonL, cuadro.pointButtonR)){
-                   cuadro.aristaBotton=varShared.aristasHorizontales[f][c];
-               }
+                if (varShared.aristasHorizontales[f][c].contains(cuadro.pointTopL, cuadro.pointTopR)) {
+                    cuadro.aristaTop = varShared.aristasHorizontales[f][c];
+                } else if (varShared.aristasHorizontales[f][c].contains(cuadro.pointButtonL, cuadro.pointButtonR)) {
+                    cuadro.aristaBotton = varShared.aristasHorizontales[f][c];
+                }
             }
         }
 
-        for (int f = 0; f < nPoints-1; f++) {
+        for (int f = 0; f < nPoints - 1; f++) {
             for (int c = 0; c < nPoints; c++) {
-                if(varShared.aristasVerticales[f][c].contains(cuadro.pointTopL, cuadro.pointButtonL)){
-                    cuadro.aristaLeft=varShared.aristasVerticales[f][c];
-                }else if(varShared.aristasVerticales[f][c].contains(cuadro.pointTopR, cuadro.pointButtonR)){
-                    cuadro.aristaRigth=varShared.aristasVerticales[f][c];
+                if (varShared.aristasVerticales[f][c].contains(cuadro.pointTopL, cuadro.pointButtonL)) {
+                    cuadro.aristaLeft = varShared.aristasVerticales[f][c];
+                } else if (varShared.aristasVerticales[f][c].contains(cuadro.pointTopR, cuadro.pointButtonR)) {
+                    cuadro.aristaRigth = varShared.aristasVerticales[f][c];
                 }
             }
         }
@@ -242,14 +241,22 @@ public class Controller implements Constantes {
         paintAristasVerticales(panelDrawable.getGraphics());
         paintPoints(panelDrawable.getGraphics());
     }
+
+    public void paintDrawables(Graphics graphics) {
+        paintCuadros(graphics);
+        paintAristasHorizontales(graphics);
+        paintAristasVerticales(graphics);
+        paintPoints(graphics);
+    }
     private void paintCuadros(Graphics graphics) {
-        for (int f = 0; f < nPoints-1; f++) {
-            for (int c = 0; c < nPoints-1; c++) {
+        for (int f = 0; f < nPoints - 1; f++) {
+            for (int c = 0; c < nPoints - 1; c++) {
                 varShared.cuadros[f][c].paint(graphics);
             }
         }
 
     }
+
     private void paintAristasVerticales(Graphics graphics) {
         for (int f = 0; f < nPoints - 1; f++) {
             for (int c = 0; c < nPoints; c++) {

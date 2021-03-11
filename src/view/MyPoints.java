@@ -4,6 +4,8 @@ import Controller.Constantes;
 
 import java.awt.*;
 
+import static java.lang.Thread.sleep;
+
 public class MyPoints implements Constantes {
     private final int diametro=10;
     private final int radio=diametro/2;
@@ -31,7 +33,14 @@ public class MyPoints implements Constantes {
         panelDrawable.fillOval(x-radio,y-radio, diametro, diametro);
     }
 
-    public void setSelect(Graphics panelDrawable){
+    public void setSelect(Graphics panelDrawable,int timeSleep){
+        if (timeSleep!=0){
+            try {
+                sleep(timeSleep);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         panelDrawable.setColor(Color.orange);
         panelDrawable.fillOval(x-radio,y-radio, diametro, diametro);
     }
