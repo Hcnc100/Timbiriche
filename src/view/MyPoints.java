@@ -7,7 +7,7 @@ import java.awt.*;
 import static java.lang.Thread.sleep;
 
 public class MyPoints implements Constantes {
-    private final int diametro=10;
+    private final int diametro=11;
     private final int radio=diametro/2;
     private final Rectangle rectangle;
     public int x;

@@ -56,11 +56,18 @@ public class Arista implements Constantes {
 
 
     public void paint(Graphics panelDrawable) {
-        panelDrawable.setColor(color);
-        if(orientation==Horizontal){
-            panelDrawable.fillRect(pointA.x, pointA.y, (pointB.x-pointA.x),3);
-        }else{
-            panelDrawable.fillRect(pointA.x, pointA.y, 3,(pointB.y-pointA.y));
+        if (isVisible()){
+            if(orientation==Horizontal){
+                panelDrawable.setColor(Color.black);
+                panelDrawable.fillRect(pointA.x, pointA.y-3, (pointB.x-pointA.x),6);
+                panelDrawable.setColor(color);
+                panelDrawable.fillRect(pointA.x, pointA.y-2, (pointB.x-pointA.x),4);
+            }else{
+                panelDrawable.setColor(Color.black);
+                panelDrawable.fillRect(pointA.x-3, pointA.y, 6,(pointB.y-pointA.y));
+                panelDrawable.setColor(color);
+                panelDrawable.fillRect(pointA.x-2, pointA.y, 4,(pointB.y-pointA.y));
+            }
         }
     }
 

@@ -11,8 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-import static java.lang.Thread.sleep;
-
 public class Controller implements Constantes {
     private VarShared varShared;
     private Arbol arbol;
@@ -46,7 +44,7 @@ public class Controller implements Constantes {
                 if (Arista.isLineValide(pointSelected,clickPoint)) {
                     Arista auxArista = getArista(pointSelected,clickPoint);
                     animationAristaVisible(graphics,auxArista,colorUser,0,0);
-                    updateCuadrosBeforeClick(auxArista,graphics,colorUser);
+                    updateCuadrosBeforeClick(auxArista,graphics,colorUser,varShared.userPoints);
                     pointSelected=null;
                 } else {
                     JOptionPane.showMessageDialog(null,
@@ -66,7 +64,7 @@ public class Controller implements Constantes {
         arista.pointB.setDeselect(graphics);
     }
 
-    private void updateCuadrosBeforeClick(Arista arista, Graphics graphics, Color colorArista) {
+    private void updateCuadrosBeforeClick(Arista arista, Graphics graphics, Color colorArista,Integer points) {
         varShared.aristasVisibles.add(arista);
         varShared.aristasNoVisibles.remove(arista);
         ArrayList<Cuadro> cuadrosNuevosCompletos = Cuadro.getCuadros(varShared.cuadros);
@@ -77,13 +75,14 @@ public class Controller implements Constantes {
                 auxArray.get(0).setVisible(colorArista);
                 varShared.cuadrosActuales.add(auxArray.get(0));
                 paintDrawables(graphics);
+                points++;
             }
         }
     }
 
     private void clickInPointIa(Arista arista, Graphics graphics) {
         animationAristaVisible(graphics, arista, colorIA, 100, 100);
-        updateCuadrosBeforeClick(arista, graphics, colorIA);
+        updateCuadrosBeforeClick(arista, graphics, colorIA,varShared.iaPoints);
     }
 
     public void initAlgoritmo(Graphics graphics) {

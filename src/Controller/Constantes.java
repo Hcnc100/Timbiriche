@@ -10,8 +10,8 @@ public interface Constantes {
     int marginCuadroInterno =1;
     int ProdundidadBusqueda=2;
     Color colorInvisible=Color.white;
-    Color colorIA=Color.red;
-    Color colorUser=Color.blue;
+    Color colorIA= new Color(233, 30, 99);
+    Color colorUser=new Color(3, 169, 244);
     int Horizontal=1;
     int Vertical=2;
 }

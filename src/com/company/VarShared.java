@@ -15,7 +15,7 @@ public class VarShared implements Constantes {
     public ArrayList<Cuadro> cuadrosActuales = new ArrayList<>();
     public ArrayList<Arista> aristasVisibles = new ArrayList<>();
     public ArrayList<Arista> aristasNoVisibles = new ArrayList<>();
-    public int userPoints=0;
-    public int iaPoints=0;
+    public Integer userPoints=0;
+    public Integer iaPoints=0;
     public  VarShared(){}
 }

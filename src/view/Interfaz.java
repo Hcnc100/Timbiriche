@@ -14,7 +14,7 @@ public class Interfaz extends JFrame {
 
     public Interfaz() {
         controller = new Controller();
-        setSize(300, 300);
+        setSize(400, 400);
         setTitle("Timbiriche");
         add(getGamePane(), CENTER);
         Button button= new Button("Jugada IA");
